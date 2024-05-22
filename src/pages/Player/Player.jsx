@@ -24,47 +24,21 @@ const Player = () => {
   };
 
   useEffect(() => {
-    if (!id) return;
-
     fetch(`https://api.themoviedb.org/3/movie/${id}/videos?language=en-US`, options)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(response => {
-        if (response.results && response.results.length > 0) {
-          setApiData(response.results[0]);
-        } else {
-          throw new Error('No video data found');
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        setError(err.message);
-      });
-  }, [id]);
+    .then(response => response.json())
+    .then(response => setApiData(response.results[0]))
+    .catch(err => console.error(err));  
+    
+  },[])
 
-  if (error) {
-    return <div className="error">{error}</div>;
-  }
+
 
   return (
     <div className='player'>
-      <img src={back_arrow_icon} alt="Back" onClick={() => navigate(-1)} />
-      {apiData.key ? (
-        <iframe
-          width="90%"
-          height="90%"
-          src={`https://www.youtube.com/embed/${apiData.key}`}
-          title='trailer'
-          frameBorder="0"
-          allowFullScreen
-        ></iframe>
-      ) : (
-        <div>Loading...</div>
-      )}
+      <img src={back_arrow_icon} alt="Back" onClick={() => navigate(-2)} />
+      <iframe width='90%' height='90%'
+      src={`https://www.youtube.com/embed/${apiData.key}`} title='trailer' frameBorder='0'
+      allowFullScreen></iframe>
       <div className="player-info">
         <p>{apiData.published_at.slice(0, 10)}</p>
         <p>{apiData.name}</p>
